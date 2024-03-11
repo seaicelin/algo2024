@@ -5,6 +5,11 @@ void swap(int& x, int& y) {
     y = temp;
 }
 
+void heapAdd(int arr[],int n, int val) {
+    
+
+}
+
  /*
 * 维护堆的性质
 * @param arr 存储堆的数组

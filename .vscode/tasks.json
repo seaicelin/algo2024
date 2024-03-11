@@ -52,7 +52,7 @@
                 "-std=c++11",//无法识别*.cpp通配符，把std=c++11放在前面就能成功
                 "*.cpp",
                 "-o",
-                "${fileDirname}\\exe\\${fileBasenameNoExtension}.exe"
+                "${fileDirname}\\bin\\${fileBasenameNoExtension}.exe"
             ],
             "options": {
                 "cwd": "${fileDirname}"
