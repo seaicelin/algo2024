@@ -42,21 +42,19 @@ void buildSegmentTree(int arr[], int left, int right, int pos){
     
 }
 
-//3,6  2,8, 
+//4,6  0,9
 int searchSegmentTree(int left, int right, int pos) {
     if (left <= seg_tree[pos].left && right >= seg_tree[pos].right) {
         return seg_tree[pos].sum;
     }
 
-    //int mid = (left + right) >> 1;
     int lson = pos * 2 + 1;
     int rson = pos * 2 + 2;
     int ret = 0;
-    if (left >= seg_tree[pos].left) {
+    if (seg_tree[lson].right >= left) {
         ret += searchSegmentTree(left, right, lson);
     }
-
-    if (right <= seg_tree[pos].right) {
+    if (seg_tree[rson].left <= right) {
         ret += searchSegmentTree(left, right, rson);
     }
     return ret;
@@ -87,9 +85,10 @@ int main() {
     int arr[SIZE] = {9, 4, 12, 99, 2, 3, 50, 30, 5, 10};
 
     buildSegmentTree(arr, 0, SIZE - 1, 0);
-    //test_build_tree(arr);
+    test_build_tree(arr);
     
-    searchSegmentTree(1, 1, 0);
+    int ret = searchSegmentTree(0, 8, 0);
+    printf("ret = %d", ret);
 
     updateSegmentTree();
 

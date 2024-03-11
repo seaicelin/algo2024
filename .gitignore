@@ -1,2 +1,6 @@
 bin/
 bin\
+tasks.json
+launch.json
+.vscode/launch.json
+.vscode/tasks.json
