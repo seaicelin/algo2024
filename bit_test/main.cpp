@@ -115,9 +115,9 @@ int main() {
         int storeModeIndex = storeModeLen;//&storeMode[storeModeLen++];
         int stepCount = 0;
         long long* pMode = &storeMode[storeModeLen++];
-        int step = 1;
+        int step = 0;
         for (int i = j; i < 100; i++) {
-            long long state = stateList[i].state;
+            //long long state = stateList[i].state;
             long long curMode = stateList[i].mode;
             //printf("curMode=%d\n", curMode);
             *pMode = (*pMode) | (curMode << (i << 1));
@@ -157,6 +157,33 @@ int main() {
             }
         }
     }
+
+    for (int j = 0; j < 100; j++) {
+        int stepCount = 0;
+        int step;
+        int index;
+        int ret = getStep(stateList[j].state, step, index);
+        printf("getStep ret = %d, pstart=%d\n", ret, index);
+        long long* pStart = &storeMode[index];
+        int i = j;
+        while(step--) {
+            int mode = stateList[i].mode;
+            int storeMode = (((*pStart) >> (i << 1)) & 0x3);
+            i++;
+            if (mode != storeMode) {
+                printf("fail\n");
+            } else {
+                printf("success\n");
+            }
+            stepCount++;
+            if (stepCount == 32) {
+                stepCount = 0;
+                pStart++;
+            }
+        }
+    }    
+
+
 
 
     return 0;
