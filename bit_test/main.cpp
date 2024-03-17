@@ -23,8 +23,8 @@ int stateListLen = 0;
 struct MapNode {
     long long state;
     int step;
-    long long* pStart;
-    MapNode():state(0),step(0), pStart(nullptr){}
+    int index;
+    MapNode():state(0),step(0), index(-1){}
 };
 MapNode stepMap[SIZE];
 
@@ -70,9 +70,9 @@ int my_hash(long long state) {
     return state % mod;
 }
 
-int putStep(long long state, int step, long long* p) {
+int putStep(long long state, int step, int index) {
     int key = my_hash(state);
-    while(stepMap[key].step!=0) {
+    while(stepMap[key].step != 0) {
         if (stepMap[key].state == state) {
             return -1;
         }
@@ -82,16 +82,16 @@ int putStep(long long state, int step, long long* p) {
 
     stepMap[key].state = state;
     stepMap[key].step = step;
-    stepMap[key].pStart = p;
+    stepMap[key].index = index;
     return 0;
 }
 
-int getStep(long long state, int& step, long long* p) {
+int getStep(long long state, int& step, int& index) {
     int key = my_hash(state);
     while(stepMap[key].step != 0) {
         if (stepMap[key].state == state) {
             step = stepMap[key].step;
-            p = stepMap[key].pStart;
+            index = stepMap[key].index;
             return 0;
         }
         key++;
@@ -111,42 +111,50 @@ int main() {
     //int j = 1;
     //long long state = stateList[0].state;
     //mode = stateList[0].mode;
-    long long* pStart = &storeMode[storeModeLen++];
-    int stepCount = 0;
-    long long* pMode = pStart;
-    int step = 1;
-    for (int i = 0; i < 100; i++) {
-        long long state = stateList[i].state;
-        long long curMode = stateList[i].mode;
-        //printf("curMode=%d\n", curMode);
-        *pMode = (*pMode) | (curMode << (i << 1));
-        step++;
-        printf("i=%d,curMode=%lld,storeMode=%lld,stepCont=%d\n", i, curMode, (((*pMode) >> (i << 1)) & 0x3), stepCount);
-        stepCount++;
-        if (stepCount == 32) {
-            stepCount = 0;
-            storeModeLen++;
-            pMode++;
+    for (int j = 0; j < 100; j++) {
+        int storeModeIndex = storeModeLen;//&storeMode[storeModeLen++];
+        int stepCount = 0;
+        long long* pMode = &storeMode[storeModeLen++];
+        int step = 1;
+        for (int i = j; i < 100; i++) {
+            long long state = stateList[i].state;
+            long long curMode = stateList[i].mode;
+            //printf("curMode=%d\n", curMode);
+            *pMode = (*pMode) | (curMode << (i << 1));
+            step++;
+            //printf("i=%d,curMode=%lld,storeMode=%lld,stepCont=%d\n", i, curMode, (((*pMode) >> (i << 1)) & 0x3), stepCount);
+            stepCount++;
+            if (stepCount == 32) {
+                stepCount = 0;
+                pMode = &storeMode[storeModeLen++];
+                //storeModeLen++;
+                //pMode++;
+            }
         }
+        int ret = putStep(stateList[j].state, step, storeModeIndex);
+        printf("putStep j=%d, ret = %d, pStart=%d\n", j, ret, storeModeIndex);
     }
-    int ret = putStep(stateList[0].state, step, pStart);
-    printf("putStep ret = %d\n", ret);
 
-    ret = getStep(stateList[0].state, step, pStart);
-    printf("getStep ret = %d\n", ret);
-    stepCount = 0;
-    for (int i = 0; i < 100; i++) {
-        int mode = stateList[i].mode;
-        int storeMode = (((*pStart) >> (i << 1)) & 0x3);
-        if (mode != storeMode) {
-            printf("fail\n");
-        } else {
-            printf("success\n");
-        }
-        stepCount++;
-        if (stepCount == 32) {
-            stepCount = 0;
-            pStart++;
+    for (int j = 0; j < 100; j++) {
+        int stepCount = 0;
+        int step;
+        int index;
+        int ret = getStep(stateList[j].state, step, index);
+        printf("getStep ret = %d, pstart=%d\n", ret, index);
+        long long* pStart = &storeMode[index];
+        for (int i = j; i < 100; i++) {
+            int mode = stateList[i].mode;
+            int storeMode = (((*pStart) >> (i << 1)) & 0x3);
+            if (mode != storeMode) {
+                printf("fail\n");
+            } else {
+                printf("success\n");
+            }
+            stepCount++;
+            if (stepCount == 32) {
+                stepCount = 0;
+                pStart++;
+            }
         }
     }
 
