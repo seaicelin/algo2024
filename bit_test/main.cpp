@@ -71,6 +71,9 @@ int my_hash(long long state) {
 }
 
 int putStep(long long state, int step, int index) {
+    if(step == 0) {
+        return -1;
+    }
     int key = my_hash(state);
     while(stepMap[key].step != 0) {
         if (stepMap[key].state == state) {
@@ -107,17 +110,13 @@ int main() {
     printf("%lld,%d\n", stateList[0].state, stateListLen);
     printf("%lld,%d\n", stateList[stateListLen-1].state, stateListLen);
 
-    //long long mode;
-    //int j = 1;
-    //long long state = stateList[0].state;
-    //mode = stateList[0].mode;
+
     for (int j = 0; j < 100; j++) {
         int storeModeIndex = storeModeLen;//&storeMode[storeModeLen++];
         int stepCount = 0;
         long long* pMode = &storeMode[storeModeLen++];
         int step = 0;
         for (int i = j; i < 100; i++) {
-            //long long state = stateList[i].state;
             long long curMode = stateList[i].mode;
             //printf("curMode=%d\n", curMode);
             *pMode = (*pMode) | (curMode << (i << 1));
@@ -127,8 +126,6 @@ int main() {
             if (stepCount == 32) {
                 stepCount = 0;
                 pMode = &storeMode[storeModeLen++];
-                //storeModeLen++;
-                //pMode++;
             }
         }
         int ret = putStep(stateList[j].state, step, storeModeIndex);
