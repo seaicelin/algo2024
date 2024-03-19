@@ -1,5 +1,4 @@
 //#include "sec_main.h"
-#if 0
 #include <stdio.h>
 
 #define SIZE 3
@@ -46,8 +45,8 @@ int my_hash(int state);
 bool movePuzzle(int mode, int& start_x, int& start_y);
 int putState(int state, int bfs_id);
 void moveBackFromTarget(Node* node);
-int findStateInCache(int state, long long& mode);
-int putStateInCaceh(int state, long long mode);
+int findStateInCache(int state);
+int putStateInCaceh(int state, int step, int index);
 void moveBackFromCache(const long long& mode);
 
 #if test_code
@@ -198,33 +197,93 @@ int putState(int state, int bfs_id) {
 struct ModeNode {
     int state;
     long long modeList;
-    ModeNode():state(0), modeList(-1) {}
+    ModeNode():state(0),modeList(-1) {}
 };
 
-int modeList[500];
+long long cacheList[STATE_SIZE];
+int cacheListIndex = 0;
+struct CacheNode
+{
+    int state;
+    int step;
+    int index;
+    CacheNode():state(0),step(0),index(-1){}
+};
+CacheNode cacheMap[MAP_NODE_SIZE];
+
+struct ModeNode {
+    int state;
+    int mode;
+    ModeNode():state(0), mode(-1) {}
+};
+
+ModeNode modeList[500];
 int modeListIndex = 0;
 void moveBackFromTarget(Node* node) {
     modeListIndex = 0;
     while(node && node->mode != -1) {
-        modeList[modeListIndex++] = node->mode;
+        modeList[modeListIndex].mode = node->mode;
+        modeList[modeListIndex++].state = node->state;
         node = node->par;
-        //printf("state=%d,mode=%d\n", node->state,node->mode);
     }
 
     for (int i = modeListIndex - 1; i >= 0; i--) {
-        move(modeList[i]);
+        move(modeList[i].mode);
+
+        int state = modeList[i].state;
+        int step = 0;
+        int index = cacheListIndex;
+        long long* mode = &cacheList[cacheListIndex++];
+        long long tempMode = 0;
+        int moveBit = 0;
+        for (int j = i; j >= 0; j--) {
+            tempMode = modeList[j].mode;
+            (*mode) = (*mode) | (tempMode << 2*moveBit);
+            printf("%d,%d");
+            moveBit++;
+            step++;
+            if (step % 32 == 0 ) {
+                mode++;
+                moveBit = 0;
+            }
+            putStateInCaceh(state, step, index);
+        }
     }
+
 }
 
-int findStateInCache(int state, long long& mode) {
+
+
+int findStateInCache(int state) {
+    int key = my_hash(state);
+    while(cacheMap[key].index != -1) {
+        if (cacheMap[key].state == state) {
+            return cacheMap[key].index;
+        }
+        key++;
+        key %= MAP_NODE_SIZE;
+    }
     return -1;
 }
 
-int putStateInCaceh(int state, long long mode) {
-    return -1;
+int putStateInCaceh(int state, int step, int index) {
+    int key = my_hash(state);
+    while(cacheMap[key].index != -1) {
+        if (cacheMap[key].state == state) {
+            return cacheMap[key].index;
+        }
+        key++;
+        key %= MAP_NODE_SIZE;
+    }
+    cacheMap[key].index = index;
+    cacheMap[key].state = state;
+    cacheMap[key].state = step;
+    return 0;
 }
 
-void moveBackFromCache(const long long& mode) {}
+void moveBackFromCache(const long long& mode) {
+
+}
 
 void test(const int puzzle[SIZE][SIZE]) {
     
@@ -275,8 +334,9 @@ void test(const int puzzle[SIZE][SIZE]) {
                 return;
             }
 
-            ret = findStateInCache(puzzle_state, cache_mode);
-            if (ret == 0) {
+            ret = findStateInCache(puzzle_state);
+            if (ret != -1) {
+                int cacheIndex = ret;
                 Node* target_node = &stateQueue[tail];
                 stateQueue[tail].state = puzzle_state;
                 stateQueue[tail].mode = i;
@@ -306,4 +366,3 @@ void test(const int puzzle[SIZE][SIZE]) {
 
     }
 }
-#endif
