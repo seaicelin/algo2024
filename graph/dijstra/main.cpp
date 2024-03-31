@@ -209,6 +209,15 @@ int main() {
     for (int i = 0; i < g.vex_num; i++) {
         int v = g.vex[i];
         printf("u(%d)->v(%d) shortest path = %d\n",source, v, dist[v]);
+        while(true) {
+            if (v == source) {
+                printf(" %d ", v);
+                break;
+            }
+            printf(" %d <- ", v);
+            v = pprev[v];
+        }
+        printf("\n");
     }
 
     return 0;
