@@ -5,6 +5,7 @@
         "algorithm": "cpp",
         "ios": "cpp",
         "type_traits": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "ostream": "cpp"
     }
 }
