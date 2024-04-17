@@ -5,3 +5,4 @@ launch.json
 .vscode/launch.json
 .vscode/tasks.json
 sec_main.cpp
+*.exe

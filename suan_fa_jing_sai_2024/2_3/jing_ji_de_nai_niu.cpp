@@ -7,7 +7,7 @@ using namespace std;
 int N,C;
 int s[100000+5];
 void initInput() {
-    freopen("input.txt","r", stdin); 
+    freopen("input.txt","-r", stdin); 
     cin >> N >> C;   
     for (int i = 0; i < N; i++) {
         cin >> s[i];
@@ -60,24 +60,18 @@ int main() {
 
     initInput();
     std::sort(s, s+N);
-    //std::sort(s, 0, N);
-    // for (int i = 0; i < N; i++) { 
-    //     cout << s[i] << " ";
-    // }
-    // cout << endl;
 
     int mid, left, right;
     left = 0;
-    right = s[N-1] - s[0];
-    //cout << s[N-1] - s[0] << endl;
+    right = s[N-1] - s[0] + 1;
     int ans = 0;
-    while(left <= right) {
-        mid = left + right >> 1;
+    while(left < right) {
+        mid = left + (right - left) >> 1;
         if (check(mid) == true) {
             ans = std::max(ans, mid);
             left = mid + 1;
         } else {
-            right = mid - 1;
+            right = mid;
         }
     }
     printf("%d\n", ans);
