@@ -7,7 +7,8 @@ using namespace std;
 int N,C;
 int s[100000+5];
 void initInput() {
-    freopen("input.txt","-r", stdin); 
+    cin.clear();
+    freopen("input.txt", "r", stdin); 
     cin >> N >> C;   
     for (int i = 0; i < N; i++) {
         cin >> s[i];
@@ -63,14 +64,15 @@ bool check(long long dis) {
 int main() {
 
     initInput();
-    sort(s, s+N);
+    //sort(s, s+N);
+    quick_sort(s, 0, N-1);
 
     int mid, left, right;
     left = 0;
     right = s[N-1] - s[0] + 1;
     int ans = 0;
     while(left < right) {
-        mid = left + (right - left) >> 1;
+        mid = left + ((right - left) >> 1);
         if (check(mid) == true) {
             ans = std::max(ans, mid);
             left = mid + 1;

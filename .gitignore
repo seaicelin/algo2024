@@ -6,3 +6,5 @@ launch.json
 .vscode/tasks.json
 sec_main.cpp
 *.exe
+task.json
+launch.json
