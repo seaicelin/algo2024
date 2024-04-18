@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <iostream>
-#include <algorithm>
+//#include <algorithm>
 
 using namespace std;
 
@@ -16,29 +16,44 @@ void initInput() {
     fclose(stdin);
 }
 
-void quick_sort(int arr[], int left, int right) {
-    if (left < right) {
-        int x = arr[left];
-        int l = left;
-        int r = right;
-        while(l < r) {
-            while(l < r && arr[r] > x) r--;
-            if (l < r) {
-                arr[l++] = arr[r];
-            }
-            while(l < r && arr[l] < x) l++;
-            if (l < r){
-                arr[r--] = arr[l];
-            }
+int parent(int pos) {
+    return (pos - 1) / 2;
+}
+
+void swap(int& a, int& b) {
+    int c = a;
+    a = b;
+    b = c;
+}
+
+void shipdown(int arr[], int pos, int size) {
+    int l, r, max;
+    while(true) {
+        max = pos;
+        l = 2 * pos + 1;
+        r = 2 * pos + 2;
+        if (l < size && arr[max] < arr[l]) {
+            max = l;
         }
-        arr[l] = x;
-        quick_sort(arr, left, l - 1);
-        quick_sort(arr, l + 1, right);
+        if (r < size && arr[max] < arr[r]) {
+            max = r;
+        }
+        if (pos == max) break;
+
+        swap(arr[pos], arr[max]);
+        pos = max;
     }
 }
 
-void sort(int a[], int size) {
-    quick_sort(a, 0, size-1);
+void heap_sort(int arr[], int size) {
+    for (int i = parent(size-1); i >= 0; i--) {
+        shipdown(arr, i, size);
+    }
+
+    for (int i = size - 1; i > 0; i--) {
+        swap(arr[i], arr[0]);
+        shipdown(arr, 0, i-1);
+    }
 }
 
 bool check(long long dis) {
@@ -51,6 +66,7 @@ bool check(long long dis) {
             j++;
         } else {
             cnt++;
+            if(cnt >= C) return true;
             i = j;
             j++;
         }
@@ -65,7 +81,8 @@ int main() {
 
     initInput();
     //sort(s, s+N);
-    quick_sort(s, 0, N-1);
+    //quick_sort(s, 0, N-1);
+    heap_sort(s, N);
 
     int mid, left, right;
     left = 0;

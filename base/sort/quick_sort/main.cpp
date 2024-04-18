@@ -1,6 +1,7 @@
 #include "main.h"
 
 extern void quick_sort(int arr[], int left, int right);
+extern void heap_sort(int arr[], int size);
 
 const int max_size = 10000;
 int N;
@@ -21,7 +22,8 @@ void init() {
 
 int main() {
     init();
-    quick_sort(a, 0, N-1);
+    //quick_sort(a, 0, N-1);
+    heap_sort(a, N);
     cout << "output: ";
     for (int i = 0; i < N; i++) {
         cout<<" " << a[i];
