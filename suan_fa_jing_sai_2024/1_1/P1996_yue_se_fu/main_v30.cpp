@@ -1,5 +1,5 @@
-//#include "main.h"
-//#if v30
+#include "main.h"
+#if v30
 
 #include <iostream>
 
@@ -59,4 +59,4 @@ int main() {
     return 0;
 }
 
-//#endif
+#endif
