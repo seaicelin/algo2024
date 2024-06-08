@@ -8,3 +8,4 @@ sec_main.cpp
 *.exe
 task.json
 launch.json
+sec_main
