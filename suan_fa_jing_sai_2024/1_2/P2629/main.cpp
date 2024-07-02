@@ -10,28 +10,19 @@ using namespace std;
 
 #define MAX_SZ 1000005
 
-struct NODE{
-    int val;
-    int ind;
-    NODE():val(0), ind(0){}
-};
-
 struct QUEUE{
     QUEUE():f(0),t(0){}
-    void push(int v, int i) {
-        NODE* n = &q[t++];
-        n->val = v;
-        n->ind = i;
+    void push(int i) {
+        q[t++]=i;
     }
     void popFront() {f++;}
     void popTail() {t--;}
-    NODE* front() {return &q[f];}
-    NODE* tail() {return &q[t-1];}
+    int front() {return q[f];}
+    int tail() {return q[t-1];}
     bool isEmpty() {return f == t;}
-    int size() {return t - f;}
     int f;
     int t;
-    NODE q[MAX_SZ];
+    int q[MAX_SZ * 2];
 };
 
 int a[MAX_SZ * 2];
@@ -43,31 +34,32 @@ int main() {
     cin >> n;
     QUEUE Q;
 
+    a[0]=0;
+
     int index = -1;
     for (int i = 1; i <= n; i++) {
         cin >> a[i];
-        Q.push(a[i], i);
+        a[i+n] = a[i];
     }
 
-    NODE* node;
-    NODE* node_t;
-    while(n--) {
-        node = Q.front();
-        Q.popFront();
-        if (node->val >= 0) {
-            Q.push(node->val, node->ind);
-        } else {
-            node_t = Q.tail();
-            while(node_t->val + node->val < 0) {
-                node->val += node_t->val;
-                Q.popTail();
-                node_t = Q.tail();
-            }
-            node_t->val += node->val;
+    for (int i = 1; i <= 2*n; i++) {
+        a[i] += a[i-1];
+    }
+
+    int ans = 0;
+    Q.push(0);
+    for (int i = 1; i <= 2*n - 1; i++) {
+        while(!Q.isEmpty() && Q.front() <= i - n) {
+            Q.popFront();
         }
+        while(!Q.isEmpty() && a[Q.tail()] >= a[i]) {
+            Q.popTail();
+        }
+        Q.push(i);
+        if (i >= n && a[Q.front()] - a[i-n] >= 0) ans++;
     }
 
-    cout << Q.size() << endl;
-
+    cout << ans << endl;
+    while(1);
     return 0;
 }
