@@ -9,3 +9,6 @@ sec_main.cpp
 task.json
 launch.json
 sec_main
+.vscode/launch.json
+.vscode/tasks.json
+/bin/
