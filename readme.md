@@ -16,3 +16,7 @@
 3、cin.getline(char*,len)读取换行符并替换成'\0'，并将换行符从输入队列中抹去
 */
 ```
+
+#### 排序比较
+https://blog.csdn.net/qq_39521554/article/details/79364718
+https://cloud.tencent.com/developer/article/2381985
