@@ -2,9 +2,7 @@
 #include <stdio.h>
 using namespace std;
 
-namespace ice {
-
-    //#define LL long long
+//namespace ice {
 
     const int maxn = 10005;
     const int maxe = 50005*2;
@@ -92,7 +90,7 @@ namespace ice {
     Node node[maxn];
     Edge edge[maxe];
     bool vis[maxn];
-    long long int d[maxn];
+    //long long int d[maxn];
 
     int n,m,b,bb;
     bool flag;
@@ -101,10 +99,10 @@ namespace ice {
 
 
     void init () {
-        for (int i = 0; i < maxn; i++) {
-            d[i]=inf;
-        }
-        d[1]=0;
+        // for (int i = 0; i < maxn; i++) {
+        //     d[i]=inf;
+        // }
+        // d[1]=0;
     }
 
     bool dijkstra(int mid) {
@@ -124,13 +122,14 @@ namespace ice {
                 f = node[v].f;
                 if (f < mid) continue;
                 if (vis[v]) continue;
-                if (d[u] + c < d[v]) {
-                    d[v] = d[u] + c;
-                    q.push(node[v]);
-                }
+                // if (d[u] + c < d[v]) {
+                //     d[v] = d[u] + c;
+                //     q.push(node[v]);
+                // }
             }
         }
-        return d[n] <= b;
+        return false;
+        //return d[n] <= b;
     }
 
     bool check(int mid) {
@@ -198,10 +197,10 @@ namespace ice {
         }
 
     }
-};
+//};
 
 int main() {
-    ice::work();
+    //ice::work();
 
     return 0;
 }
