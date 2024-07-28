@@ -1,13 +1,16 @@
 #include <iostream>
 #include <stdio.h>
+#include <queue>
 using namespace std;
 
-//namespace ice {
+namespace ice {
 
     const int maxn = 10005;
     const int maxe = 50005*2;
     const long long int ll_inf = 0x7fffffffffffffff;
     const int inf = 0x7fffffff;
+
+    long long d[maxn];
 
     struct Node {
         int u;
@@ -15,7 +18,7 @@ using namespace std;
         int head;
         int c;
         Node() {u = f = head = c = 0;}
-        bool operator<(Node& n) {
+        bool operator<(const Node& n) const {
             return c < n.c;
         }
     };
@@ -28,34 +31,33 @@ using namespace std;
         Edge() {u=v=c=next=0;}
     }; 
 
-    struct proqueue {
-        proqueue() {t=0;}
+    struct priority_queue {
+        priority_queue() {t=0;}
         void reset() {t=0;};
-        bool ie() {return t == 0;}
+        bool empty() {return t == 0;}
         bool ne() {return t > 0;}
         void push(Node& n) {
-            node[++t]=n;
-            swap(t, 1);
-            down(1);
+            q[++t]=n;
+            up(t);
         }
         void pop() {
             swap(1, t);
             t--;
-            up(t);
+            down(1);
         }
-        Node top() {return node[1];}
+        Node top() {return q[1];}
         void swap(int a, int b) {
-            Node n = node[a];
-            node[a] = node[b];
-            node[b] = n;
+            Node n = q[a];
+            q[a] = q[b];
+            q[b] = n;
         }
         bool needMove(int child, int parent) {
-            if (node[child] < node[parent]) return true;
+            if (q[child] < q[parent]) return true;
             return false;
         }
 
-        int lson(int pos) { return pos << 2;}
-        int rson(int pos) {return (pos << 2) + 1;}
+        int lson(int pos) { return pos << 1;}
+        int rson(int pos) {return (pos << 1) + 1;}
         int par(int pos) {return pos >> 1;}
         void up(int pos) {
             int parent = par(pos);
@@ -84,56 +86,58 @@ using namespace std;
             }
         }
         int t;
-        Node node[maxn*1000];
+        Node q[maxe];
     };
 
-    Node node[maxn];
+    Node node_list[maxn];
     Edge edge[maxe];
     bool vis[maxn];
-    //long long int d[maxn];
 
     int n,m,b,bb;
     bool flag;
 
-    proqueue q;
-
+    priority_queue q;
 
     void init () {
-        // for (int i = 0; i < maxn; i++) {
-        //     d[i]=inf;
-        // }
-        // d[1]=0;
+        for (int i = 0; i < maxn; i++) {
+            d[i]=ll_inf;
+            vis[i]=0;
+        }
+        d[1]=0;
     }
 
     bool dijkstra(int mid) {
+        if (node_list[1].f > mid) return false;
+        init();
         q.reset();
+        //priority_queue<Node> q;
+        q.push(node_list[1]);
 
-        q.push(node[1]);
-
-        Node n;
+        Node node;
         int u, f, v, c;
-        while(q.ne()) {
-            n = q.top(); q.pop();
-            vis[n.u]=1;
-            for (int i = n.head; i; i = edge[i].next) {
+        while(!q.empty()) {
+            node = q.top(); q.pop();
+            if (vis[node.u]) continue;
+            vis[node.u]=1;
+            for (int i = node.head; i; i = edge[i].next) {
                 u = edge[i].u;
                 v = edge[i].v;
                 c = edge[i].c;
-                f = node[v].f;
-                if (f < mid) continue;
+                f = node_list[v].f;
+                if (f > mid) continue;
                 if (vis[v]) continue;
-                // if (d[u] + c < d[v]) {
-                //     d[v] = d[u] + c;
-                //     q.push(node[v]);
-                // }
+                if (d[u] + c < d[v]) {
+                    d[v] = d[u] + c;
+                    node = node_list[v];
+                    node.c = c;
+                    q.push(node);
+                }
             }
         }
-        return false;
-        //return d[n] <= b;
+        return d[n] <= b;
     }
 
     bool check(int mid) {
-        init();
         return dijkstra(mid);
     }
 
@@ -150,8 +154,8 @@ using namespace std;
         int f;
         for (int i = 1; i <= n; i++) {
             cin >> f;
-            node[i].u = i;
-            node[i].f = f;
+            node_list[i].u = i;
+            node_list[i].f = f;
             if (left > f) left = f;
             if (right < f) right = f;
         }
@@ -167,40 +171,37 @@ using namespace std;
             pe->u = from;
             pe->v = to;
             pe->c = c;
-            pe->next = node[from].head;
-            node[from].head = cnt;
+            pe->next = node_list[from].head;
+            node_list[from].head = cnt;
         
             pe = &edge[++cnt];
             pe->u = to;
             pe->v = from;
             pe->c = c;
-            pe->next = node[to].head;
-            node[to].head = cnt;
+            pe->next = node_list[to].head;
+            node_list[to].head = cnt;
         }
 
+        if (!dijkstra(inf)) {
+            cout << "AFK" << endl;
+            return;
+        }
 
         int mid, ans=inf;
         while(left < right) {
             mid = (left + right)/2;
             if(check(mid)) {
-            right = mid;
-            if (ans > mid) ans = mid;
+                right = mid;
+                ans = mid;
             } else {
                 left = mid+1;
             }
         }
-
-        if (ans == inf) {
-            cout << "AFK" << endl;
-        } else {
-            cout << ans << endl;
-        }
-
+        cout << ans << endl;
     }
-//};
+};
 
 int main() {
-    //ice::work();
-
+    ice::work();
     return 0;
 }
