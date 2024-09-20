@@ -20,3 +20,10 @@
 #### 排序比较
 https://blog.csdn.net/qq_39521554/article/details/79364718
 https://cloud.tencent.com/developer/article/2381985
+
+#### 日志用这个来打印啊
+```
+FILE* fp;
+fp = fopen("log.txt", "w");
+fprintf(fp, "hello world\n");
+```
