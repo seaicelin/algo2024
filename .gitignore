@@ -5,5 +5,7 @@ launch.json
 sec_main.cpp
 *.exe
 sec_main
+exp
+exp/
 /bin/
 *.json
