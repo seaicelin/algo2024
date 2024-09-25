@@ -27,3 +27,6 @@ FILE* fp;
 fp = fopen("log.txt", "w");
 fprintf(fp, "hello world\n");
 ```
+
+#### 二分三分 r-l 临界值问题处理 
+求三分或者二分的时候，如果 r-l < 5 ,避免临界值问题，这个时候可以跳出来穷举
