@@ -9,6 +9,8 @@
 "body": [
     "#include <iostream>",
     "#include <stdio.h>",
+    "#include <algorithm.h>",
+    "#include <math.h>",
     "using namespace std;",
     "",
     "#define DEBUG 1",
@@ -25,10 +27,10 @@
 	"}",
 	"",
 	"",
-	"void solve() {",
-	"    P3382::work();",
 	"}",
-    "}",
+	"void solve() {",
+	"    ice::work();",
+	"}",
 ],
 "description": "c++ template"
 }

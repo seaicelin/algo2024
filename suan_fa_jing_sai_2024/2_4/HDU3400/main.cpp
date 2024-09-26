@@ -3,7 +3,7 @@
 using namespace std;
 
 #define DEBUG 1
-FILE* fp;
+extern FILE* fp;
 extern void solve();
 
 int main() {
